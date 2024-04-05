@@ -4,11 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Конвертер одиниць виміру:
+//Створіть клас Converter для реалізації конвертації між різними одиницями виміру (наприклад, довжина, вага, об'єм).
+//Реалізуйте методи для конвертації значень з однієї одиниці в іншу.
+//Користувач повинен ввести значення та одиниці вихідної величини, а потім вибрати одиниці, в які необхідно перевести.
+//Результати конвертації виводяться на консоль.
+
 namespace _04._04._2024
 {
-    class Converter
+    interface IConverter
     {
-        public double LengthConverter(double value, string fromUnit, string toUnit)
+        double Convert(double value, string fromUnit, string toUnit);
+    }
+
+    class LengthConverter : IConverter
+    {
+        public double Convert(double value, string fromUnit, string toUnit)
         {
             // Довжина
             if (fromUnit.ToLower() == "m")
@@ -35,8 +46,11 @@ namespace _04._04._2024
 
             return value;
         }
+    }
 
-        public double WeightConverter(double value, string fromUnit, string toUnit)
+    class WeightConverter : IConverter
+    {
+        public double Convert(double value, string fromUnit, string toUnit)
         {
             // Вага
             if (fromUnit.ToLower() == "kg")
@@ -63,8 +77,11 @@ namespace _04._04._2024
 
             return value;
         }
+    }
 
-        public double VolumeConverter(double value, string fromUnit, string toUnit)
+    class VolumeConverter : IConverter
+    {
+        public double Convert(double value, string fromUnit, string toUnit)
         {
             // Об'єм
             if (fromUnit.ToLower() == "l")
@@ -97,7 +114,7 @@ namespace _04._04._2024
     {
         static void Main(string[] args)
         {
-            Converter converter = new Converter();
+            IConverter converter;
 
             Console.WriteLine("Choose the conversion type:");
             Console.WriteLine("1. Length");
@@ -105,39 +122,28 @@ namespace _04._04._2024
             Console.WriteLine("3. Volume");
             int choice = int.Parse(Console.ReadLine());
 
-            double value;
-            string fromUnit, toUnit;
-
             switch (choice)
             {
                 case 1:
-                    Console.WriteLine("Enter the value and the units of the initial length (Exemple: 5 m):");
-                    value = double.Parse(Console.ReadLine());
-                    fromUnit = Console.ReadLine();
-                    Console.WriteLine("Enter the units to convert to (Exemple: cm):");
-                    toUnit = Console.ReadLine();
-                    Console.WriteLine("Conversion result: " + converter.LengthConverter(value, fromUnit, toUnit) + " " + toUnit);
+                    converter = new LengthConverter();
                     break;
                 case 2:
-                    Console.WriteLine("Enter the value and the units of the initial weight (Exemple: 5 kg):");
-                    value = double.Parse(Console.ReadLine());
-                    fromUnit = Console.ReadLine();
-                    Console.WriteLine("Enter the units to convert to (Exemple:  g):");
-                    toUnit = Console.ReadLine();
-                    Console.WriteLine("Conversion result: " + converter.WeightConverter(value, fromUnit, toUnit) + " " + toUnit);
+                    converter = new WeightConverter();
                     break;
                 case 3:
-                    Console.WriteLine("Enter the value and the units of the initial volume (Exemple: 5 l):");
-                    value = double.Parse(Console.ReadLine());
-                    fromUnit = Console.ReadLine();
-                    Console.WriteLine("Enter the units to convert to (Exemple: gal):");
-                    toUnit = Console.ReadLine();
-                    Console.WriteLine("Conversion result: " + converter.VolumeConverter(value, fromUnit, toUnit) + " " + toUnit);
+                    converter = new VolumeConverter();
                     break;
                 default:
                     Console.WriteLine("Invalid choice");
-                    break;
+                    return;
             }
+
+            Console.WriteLine("Enter the value and the units of the initial measurement (Exemple: 5 m):");
+            double value = double.Parse(Console.ReadLine());
+            string fromUnit = Console.ReadLine();
+            Console.WriteLine("Enter the units to convert to (Exemple: cm):");
+            string toUnit = Console.ReadLine();
+            Console.WriteLine("Conversion result: " + converter.Convert(value, fromUnit, toUnit) + " " + toUnit);
         }
     }
 }
